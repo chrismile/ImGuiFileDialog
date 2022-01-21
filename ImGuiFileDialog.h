@@ -655,6 +655,7 @@ struct IGFD_Thumbnail_Info
 #include <list>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 namespace IGFD
 {
@@ -997,6 +998,7 @@ namespace IGFD
 		std::shared_ptr<std::thread> prThumbnailGenerationThread = nullptr;
 		std::list<std::shared_ptr<FileInfos>> prThumbnailFileDatasToGet;	// base container
 		std::mutex prThumbnailFileDatasToGetMutex;
+		std::condition_variable prThumbnailFileDatasToGetCv;
 		std::list<std::shared_ptr<FileInfos>> prThumbnailToCreate;			// base container
 		std::mutex prThumbnailToCreateMutex;
 		std::list<IGFD_Thumbnail_Info> prThumbnailToDestroy;				// base container

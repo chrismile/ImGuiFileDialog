@@ -2403,7 +2403,10 @@ namespace IGFD
 				{
 					prIsWorking = false;
 					if (obj)
+					{
+						prThumbnailFileDatasToGetCv.notify_all();
 						obj->join();
+					}
 				});
 		}
 	}
@@ -2427,13 +2430,15 @@ namespace IGFD
 		// infinite loop while is thread working
 		while(prIsWorking)
 		{
+			std::unique_lock<std::mutex> prThumbnailFileDatasToGetLock(prThumbnailFileDatasToGetMutex);
+			prThumbnailFileDatasToGetCv.wait(prThumbnailFileDatasToGetLock);
 			if (!prThumbnailFileDatasToGet.empty())
 			{
 				std::shared_ptr<FileInfos> file = nullptr;
-				prThumbnailFileDatasToGetMutex.lock();
 				//get the first file in the list
 				file = (*prThumbnailFileDatasToGet.begin());
-				prThumbnailFileDatasToGetMutex.unlock();
+				prThumbnailFileDatasToGet.pop_front();
+				prThumbnailFileDatasToGetLock.unlock();
 
 				// retrieve datas of the texture file if its an image file
 				if (file.use_count())
@@ -2465,14 +2470,14 @@ namespace IGFD
 									const float ratioX = (float)w / (float)h;
 									const float newX = DisplayMode_ThumbailsList_ImageHeight * ratioX;
 									float newY = w / ratioX;
-									if (newX < w) 
+									if (newX < w)
 										newY = DisplayMode_ThumbailsList_ImageHeight;
 
 									const auto newWidth = (int)newX;
 									const auto newHeight = (int)newY;
 									const auto newBufSize = (size_t)(newWidth * newHeight * 4U); //-V112 //-V1028
 									auto resizedData = new uint8_t[newBufSize];
-									
+
 									const int resizeSucceeded = stbir_resize_uint8(
 										datas, w, h, 0,
 										resizedData, newWidth, newHeight, 0,
@@ -2507,10 +2512,14 @@ namespace IGFD
 					// peu importe le resultat on vire le fichicer
 					// remove form this list
 					// write => thread concurency issues
-					prThumbnailFileDatasToGetMutex.lock();
-					prThumbnailFileDatasToGet.pop_front();
-					prThumbnailFileDatasToGetMutex.unlock();
+					//prThumbnailFileDatasToGetMutex.lock();
+					//prThumbnailFileDatasToGet.pop_front();
+					//prThumbnailFileDatasToGetMutex.unlock();
 				}
+			}
+			else
+			{
+				prThumbnailFileDatasToGetLock.unlock();
 			}
 		}
 	}
@@ -2563,6 +2572,7 @@ namespace IGFD
 					prThumbnailFileDatasToGet.push_back(vFileInfos);
 					vFileInfos->thumbnailInfo.isLoadingOrLoaded = true;
 					prThumbnailFileDatasToGetMutex.unlock();
+					prThumbnailFileDatasToGetCv.notify_all();
 				}
 			}
 		}
@@ -2643,6 +2653,7 @@ namespace IGFD
 	{
 		if (prCreateThumbnailFun)
 		{
+			prThumbnailToCreateMutex.lock();
 			if (!prThumbnailToCreate.empty())
 			{
 				for (const auto& file : prThumbnailToCreate)
@@ -2652,10 +2663,9 @@ namespace IGFD
 						prCreateThumbnailFun(&file->thumbnailInfo);
 					}
 				}
-				prThumbnailToCreateMutex.lock();
 				prThumbnailToCreate.clear();
-				prThumbnailToCreateMutex.unlock();
 			}
+			prThumbnailToCreateMutex.unlock();
 		}
 		else
 		{
@@ -2664,16 +2674,16 @@ namespace IGFD
 
 		if (prDestroyThumbnailFun)
 		{
+			prThumbnailToDestroyMutex.lock();
 			if (!prThumbnailToDestroy.empty())
 			{
 				for (auto thumbnail : prThumbnailToDestroy)
 				{
 					prDestroyThumbnailFun(&thumbnail);
 				}
-				prThumbnailToDestroyMutex.lock();
 				prThumbnailToDestroy.clear();
-				prThumbnailToDestroyMutex.unlock();
 			}
+			prThumbnailToDestroyMutex.unlock();
 		}
 		else
 		{
