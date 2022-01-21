@@ -72,11 +72,11 @@ SOFTWARE.
 	#define PATH_SEP '/'
 #endif // defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__APPLE__) || defined (__EMSCRIPTEN__)
 
-#include "imgui.h"
+#include <ImGui/imgui.h>
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 	#define IMGUI_DEFINE_MATH_OPERATORS
 #endif // IMGUI_DEFINE_MATH_OPERATORS
-#include "imgui_internal.h"
+#include <ImGui/imgui_internal.h>
 
 #include <cstdlib>
 #include <algorithm>
@@ -88,13 +88,13 @@ SOFTWARE.
 #define STB_IMAGE_IMPLEMENTATION
 #endif // STB_IMAGE_IMPLEMENTATION
 #endif // DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
+#include <Graphics/Vulkan/libs/stb/stb_image.h>
 #ifndef DONT_DEFINE_AGAIN__STB_IMAGE_RESIZE_IMPLEMENTATION
 #ifndef STB_IMAGE_RESIZE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #endif // STB_IMAGE_RESIZE_IMPLEMENTATION
 #endif // DONT_DEFINE_AGAIN__STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "stb/stb_image_resize.h"
+#include <Graphics/Vulkan/libs/stb/stb_image_resize.h>
 #endif // USE_THUMBNAILS
 
 namespace IGFD
@@ -4123,7 +4123,7 @@ namespace IGFD
 							}
 							else
 							{
-								ImGui::Text("");
+								ImGui::TextUnformatted("");
 							}
 						}
 						if (ImGui::TableNextColumn()) // file date + time
@@ -4340,7 +4340,7 @@ namespace IGFD
 							}
 							else
 							{
-								ImGui::Text("");
+								ImGui::TextUnformatted("");
 							}
 						}
 						if (ImGui::TableNextColumn()) // file date + time
