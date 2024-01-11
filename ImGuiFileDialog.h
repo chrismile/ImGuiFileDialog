@@ -1358,6 +1358,7 @@ struct IGFD_Thumbnail_Info {
 #include <regex>
 #include <array>
 #include <mutex>
+#include <condition_variable>
 #include <thread>
 #include <cfloat>
 #include <memory>
@@ -1976,6 +1977,7 @@ private:
     std::shared_ptr<std::thread> m_ThumbnailGenerationThread = nullptr;
     std::list<std::shared_ptr<FileInfos>> m_ThumbnailFileDatasToGet;  // base container
     std::mutex m_ThumbnailFileDatasToGetMutex;
+    std::condition_variable m_ThumbnailFileDatasToGetCv;
     std::list<std::shared_ptr<FileInfos>> m_ThumbnailToCreate;  // base container
     std::mutex m_ThumbnailToCreateMutex;
     std::list<IGFD_Thumbnail_Info> m_ThumbnailToDestroy;  // base container
