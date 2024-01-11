@@ -1,11 +1,11 @@
-#pragma region PVS STUDIO
+//#pragma region PVS STUDIO
 
 // This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region IGFD LICENSE
+//#pragma region IGFD LICENSE
 
 /*
 MIT License
@@ -31,13 +31,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#pragma endregion
+//#pragma endregion
+
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
+#endif  // IMGUI_DEFINE_MATH_OPERATORS
 
 #include "ImGuiFileDialog.h"
 
 #ifdef __cplusplus
 
-#pragma region Includes
+//#pragma region Includes
 
 #include <cfloat>
 #include <cstring>  // stricmp / strcasecmp
@@ -94,8 +98,8 @@ SOFTWARE.
 #define PATH_SEP '/'
 #endif  // _IGFD_UNIX_
 
-#include "imgui.h"
-#include "imgui_internal.h"
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_internal.h>
 
 // legacy compatibility 1.89
 #ifndef IM_TRUNC
@@ -106,9 +110,9 @@ SOFTWARE.
 #include <algorithm>
 #include <iostream>
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region Common defines
+//#pragma region Common defines
 
 #ifdef USE_THUMBNAILS
 #ifndef DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION
@@ -116,13 +120,13 @@ SOFTWARE.
 #define STB_IMAGE_IMPLEMENTATION
 #endif  // STB_IMAGE_IMPLEMENTATION
 #endif  // DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
+#include <Graphics/Vulkan/libs/stb/stb_image.h>
 #ifndef DONT_DEFINE_AGAIN__STB_IMAGE_RESIZE_IMPLEMENTATION
 #ifndef STB_IMAGE_RESIZE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #endif  // STB_IMAGE_RESIZE_IMPLEMENTATION
 #endif  // DONT_DEFINE_AGAIN__STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "stb/stb_image_resize.h"
+#include <Graphics/Vulkan/libs/stb/stb_image_resize.h>
 #endif  // USE_THUMBNAILS
 
 // float comparisons
@@ -133,11 +137,11 @@ SOFTWARE.
 #define IS_FLOAT_EQUAL(a, b) (fabs((a) - (b)) < FLT_EPSILON)
 #endif  // IS_FLOAT_EQUAL
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region IGFD NAMESPACE
+//#pragma region IGFD NAMESPACE
 
-#pragma region CUSTOMIZATION DEFINES
+//#pragma region CUSTOMIZATION DEFINES
 
 ///////////////////////////////
 // COMBOBOX
@@ -371,11 +375,11 @@ inline bool inToggleButton(const char* vLabel, bool* vToggled) {
 #endif  // IMGUI_TOGGLE_BUTTON
 #endif  // USE_BOOKMARK
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region INTERNAL
+//#pragma region INTERNAL
 
-#pragma region EXCEPTION
+//#pragma region EXCEPTION
 
 class IGFDException : public std::exception {
 private:
@@ -389,9 +393,9 @@ public:
     }
 };
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FILE SYSTEM INTERFACE
+//#pragma region FILE SYSTEM INTERFACE
 
 #ifndef CUSTOM_FILESYSTEM_INCLUDE
 #ifdef USE_STD_FILESYSTEM
@@ -737,9 +741,9 @@ public:
 #include CUSTOM_FILESYSTEM_INCLUDE
 #endif  // USE_CUSTOM_FILESYSTEM
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region Utils
+//#pragma region Utils
 
 // https://github.com/ocornut/imgui/issues/1720
 bool IGFD::Utils::ImSplitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size) {
@@ -936,9 +940,9 @@ std::string IGFD::Utils::FormatFileSize(size_t vByteSize) {
     return "0 " fileSizeBytes;
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FileStyle
+//#pragma region FileStyle
 
 IGFD::FileStyle::FileStyle() : color(0, 0, 0, 0) {
 }
@@ -953,9 +957,9 @@ IGFD::FileStyle::FileStyle(const FileStyle& vStyle) {
 IGFD::FileStyle::FileStyle(const ImVec4& vColor, const std::string& vIcon, ImFont* vFont) : color(vColor), icon(vIcon), font(vFont) {
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region SearchManager
+//#pragma region SearchManager
 
 void IGFD::SearchManager::Clear() {
     searchTag.clear();
@@ -982,9 +986,9 @@ void IGFD::SearchManager::DrawSearchBar(FileDialogInternal& vFileDialogInternal)
     }
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FilterInfos
+//#pragma region FilterInfos
 
 void IGFD::FilterInfos::setCollectionTitle(const std::string& vTitle) {
     title = vTitle;
@@ -1073,9 +1077,9 @@ std::string IGFD::FilterInfos::transformAsteriskBasedFilterToRegex(const std::st
     return res;
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FilterManager
+//#pragma region FilterManager
 
 const IGFD::FilterInfos& IGFD::FilterManager::GetSelectedFilter() const {
     return m_SelectedFilter;
@@ -1515,9 +1519,9 @@ void IGFD::FilterManager::SetDefaultFilterIfNotDefined() {
     }
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FileType
+//#pragma region FileType
 
 IGFD::FileType::FileType() = default;
 IGFD::FileType::FileType(const ContentType& vContentType, const bool& vIsSymlink) : m_Content(vContentType), m_Symlink(vIsSymlink) {
@@ -1557,9 +1561,9 @@ bool IGFD::FileType::operator>(const FileType& rhs) const {
     return m_Content > rhs.m_Content;
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FileInfos
+//#pragma region FileInfos
 
 bool IGFD::FileInfos::SearchForTag(const std::string& vTag) const {
     if (!vTag.empty()) {
@@ -1641,9 +1645,9 @@ bool IGFD::FileInfos::FinalizeFileTypeParsing(const size_t& vMaxDotToExtract) {
     return false;
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FileManager
+//#pragma region FileManager
 
 IGFD::FileManager::FileManager() {
     fsRoot           = IGFD::Utils::GetPathSeparator();
@@ -2570,9 +2574,9 @@ std::map<std::string, std::string> IGFD::FileManager::GetResultingSelection(File
     return res;
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FileDialogInternal
+//#pragma region FileDialogInternal
 
 void IGFD::FileDialogInternal::NewFrame() {
     canWeContinue             = true;   // reset flag for possibily validate the dialog
@@ -2678,13 +2682,13 @@ IGFD::FileDialogConfig& IGFD::FileDialogInternal::getDialogConfigRef() {
     return m_DialogConfig;
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region Optional Features
+//#pragma region Optional Features
 
-#pragma region ThumbnailFeature
+//#pragma region ThumbnailFeature
 
 IGFD::ThumbnailFeature::ThumbnailFeature() {
 #ifdef USE_THUMBNAILS
@@ -2947,9 +2951,9 @@ void IGFD::ThumbnailFeature::ManageGPUThumbnails() {
 
 #endif  // USE_THUMBNAILS
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region BookMarkFeature
+//#pragma region BookMarkFeature
 
 IGFD::BookMarkFeature::BookMarkFeature() {
 #ifdef USE_BOOKMARK
@@ -3089,9 +3093,9 @@ bool IGFD::BookMarkFeature::RemoveBookmark(const std::string& vBookMarkName) {
 }
 #endif  // USE_BOOKMARK
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region KeyExplorerFeature
+//#pragma region KeyExplorerFeature
 
 IGFD::KeyExplorerFeature::KeyExplorerFeature() = default;
 
@@ -3461,11 +3465,11 @@ void IGFD::KeyExplorerFeature::SetFlashingAttenuationInSeconds(float vAttenValue
 }
 #endif  // USE_EXPLORATION_BY_KEYS
 
-#pragma endregion
+//#pragma endregion
 
-#pragma endregion
+//#pragma endregion
 
-#pragma region FileDialog
+//#pragma region FileDialog
 
 IGFD::FileDialog::FileDialog() : BookMarkFeature(), KeyExplorerFeature(), ThumbnailFeature() {
 }
@@ -4513,13 +4517,13 @@ bool IGFD::FileDialog::m_Confirm_Or_OpenOverWriteFileDialog_IfNeeded(bool vLastA
     return false;
 }
 
-#pragma endregion
+//#pragma endregion
 
-#pragma endregion
+//#pragma endregion
 
 #endif  // __cplusplus
 
-#pragma region IGFD_C_API
+//#pragma region IGFD_C_API
 
 // return an initialized IGFD_FileDialog_Config
 IGFD_C_API IGFD_FileDialog_Config IGFD_FileDialog_Config_Get() {
@@ -4912,4 +4916,4 @@ IGFD_C_API void ManageGPUThumbnails(ImGuiFileDialog* vContextPtr) {
 }
 #endif  // USE_THUMBNAILS
 
-#pragma endregion
+//#pragma endregion
