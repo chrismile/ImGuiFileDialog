@@ -4,29 +4,13 @@
 
 #pragma once
 
+#include "Utils/StringUtils.hpp"
+
 #define FONT_ICON_BUFFER_NAME_IGFD IGFD_compressed_data_base85
 #define FONT_ICON_BUFFER_SIZE_IGFD 0xf6e
 
 #define ICON_MIN_IGFD 0xf002
 #define ICON_MAX_IGFD 0xf1c9
-
-// https://stackoverflow.com/questions/56833000/c20-with-u8-char8-t-and-stdstring
-#if defined(__cpp_char8_t)
-template<typename T>
-const char* u8Cpp20(T&& t) noexcept
-{
-#ifdef _MSC_VER
-#pragma warning (disable: 26490)
-   return reinterpret_cast<const char*>(t);
-#pragma warning (default: 26490)
-#else // _MSC_VER
-   return reinterpret_cast<const char*>(t);
-#endif
-}
-   #define U8(x) u8Cpp20(u8##x)
-#else
-#define U8(x) u8##x
-#endif
 
 #define ICON_IGFD_ADD U8("\uf067")
 #define ICON_IGFD_BOOKMARK U8("\uf02e")
