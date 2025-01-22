@@ -189,10 +189,6 @@ struct IGFD_Thumbnail_Info {
 
 #ifdef __cplusplus
 
-#ifndef IMGUI_DEFINE_MATH_OPERATORS
-#define IMGUI_DEFINE_MATH_OPERATORS
-#endif  // IMGUI_DEFINE_MATH_OPERATORS
-
 #ifdef IMGUI_INCLUDE
 #include IMGUI_INCLUDE
 #else  // IMGUI_INCLUDE
