@@ -26,6 +26,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef IMGUI_DEFINE_MATH_OPERATORS
+#define IMGUI_DEFINE_MATH_OPERATORS
+#endif  // IMGUI_DEFINE_MATH_OPERATORS
+
 #include "ImGuiFileDialog.h"
 
 #ifdef __cplusplus
@@ -100,7 +104,7 @@ SOFTWARE.
 #ifdef IMGUI_INTERNAL_INCLUDE
 #include IMGUI_INTERNAL_INCLUDE
 #else  // IMGUI_INTERNAL_INCLUDE
-#include <imgui_internal.h>
+#include <ImGui/imgui_internal.h>
 #endif  // IMGUI_INTERNAL_INCLUDE
 
 // legacy compatibility 1.89
@@ -122,13 +126,13 @@ SOFTWARE.
 #define STB_IMAGE_IMPLEMENTATION
 #endif  // STB_IMAGE_IMPLEMENTATION
 #endif  // DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
+#include <Graphics/Vulkan/libs/stb/stb_image.h>
 #ifndef DONT_DEFINE_AGAIN__STB_IMAGE_RESIZE_IMPLEMENTATION
 #ifndef STB_IMAGE_RESIZE_IMPLEMENTATION
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #endif  // STB_IMAGE_RESIZE_IMPLEMENTATION
 #endif  // DONT_DEFINE_AGAIN__STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "stb/stb_image_resize2.h"
+#include <Graphics/Vulkan/libs/stb/stb_image_resize2.h>
 #endif  // USE_THUMBNAILS
 
 ///////////////////////////////
@@ -1123,13 +1127,18 @@ void IGFD::SearchManager::Clear() {
 
 void IGFD::SearchManager::DrawSearchBar(FileDialogInternal& vFileDialogInternal) {
     // search field
+#if defined(__cpp_char8_t)
+    std::string resetButtonStringWithId = std::string(resetButtonString) + "##BtnImGuiFileDialogSearchField";
+    if (IMGUI_BUTTON(resetButtonStringWithId.c_str())) {
+#else
     if (IMGUI_BUTTON(resetButtonString "##BtnImGuiFileDialogSearchField")) {
+#endif
         Clear();
         vFileDialogInternal.fileManager.ApplyFilteringOnFileList(vFileDialogInternal);
     }
     if (ImGui::IsItemHovered()) ImGui::SetTooltip(buttonResetSearchString);
     ImGui::SameLine();
-    ImGui::Text(searchString);
+    ImGui::TextUnformatted(searchString);
     ImGui::SameLine();
     ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
     bool edited = ImGui::InputText("##InputImGuiFileDialogSearchField", searchBuffer, MAX_FILE_DIALOG_NAME_BUFFER);
@@ -4019,7 +4028,12 @@ void IGFD::FileDialog::m_DisplayPathPopup(ImVec2 vSize) {
 bool IGFD::FileDialog::m_DrawOkButton() {
     auto& fdFile = m_FileDialogInternal.fileManager;
     if (m_FileDialogInternal.canWeContinue && strlen(fdFile.fileNameBuffer)) {
+#if defined(__cpp_char8_t)
+        std::string okButtonStringWithId = std::string(resetButtonString) + "##validationdialog";
+        if (IMGUI_BUTTON(okButtonStringWithId.c_str(), ImVec2(okButtonWidth, 0.0f)) || m_FileDialogInternal.isOk) {
+#else
         if (IMGUI_BUTTON(okButtonString "##validationdialog", ImVec2(okButtonWidth, 0.0f)) || m_FileDialogInternal.isOk) {
+#endif
             m_FileDialogInternal.isOk = true;
             return true;
         }
@@ -4033,7 +4047,12 @@ bool IGFD::FileDialog::m_DrawOkButton() {
 }
 
 bool IGFD::FileDialog::m_DrawCancelButton() {
+#if defined(__cpp_char8_t)
+    std::string cancelButtonStringWithId = std::string(cancelButtonString) + "##validationdialog";
+    if (IMGUI_BUTTON(cancelButtonStringWithId.c_str(), ImVec2(cancelButtonWidth, 0.0f)) || m_FileDialogInternal.needToExitDialog)  // dialog exit asked
+#else
     if (IMGUI_BUTTON(cancelButtonString "##validationdialog", ImVec2(cancelButtonWidth, 0.0f)) || m_FileDialogInternal.needToExitDialog)  // dialog exit asked
+#endif
     {
         m_FileDialogInternal.isOk = false;
         return true;
@@ -5169,5 +5188,3 @@ IGFD_C_API void ManageGPUThumbnails(ImGuiFileDialog* vContextPtr) {
     }
 }
 #endif  // USE_THUMBNAILS
-
-#pragma endregion

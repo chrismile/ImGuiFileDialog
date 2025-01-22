@@ -184,8 +184,8 @@ struct IGFD_Thumbnail_Info {
 };
 #endif  // USE_THUMBNAILS
 
-// stdint is used for cpp and c apî (cstdint is only for cpp)
-#include <stdint.h>
+// stdint is used for cpp and c api (cstdint is only for cpp)
+#include <cstdint>
 
 #ifdef __cplusplus
 
@@ -196,7 +196,7 @@ struct IGFD_Thumbnail_Info {
 #ifdef IMGUI_INCLUDE
 #include IMGUI_INCLUDE
 #else  // IMGUI_INCLUDE
-#include <imgui.h>
+#include <ImGui/imgui.h>
 #endif  // IMGUI_INCLUDE
 
 #include <set>
@@ -1218,3 +1218,83 @@ IGFD_C_API void ManageGPUThumbnails(  // must be call in gpu zone, possibly a th
                                       // / destroy the textures
     ImGuiFileDialog* vContextPtr);    // ImGuiFileDialog context
 #endif                                // USE_THUMBNAILS
+
+// Compatibility with previous API.
+inline char* IGFD_GetFilePathName(  // Save File behavior : will always return the content of the field with current
+        // filter extention and current path, WARNINGS you are responsible to free it
+        ImGuiFileDialog* vContextPtr) {
+    return IGFD_GetFilePathName(vContextPtr, IGFD_ResultMode_OverwriteFileExt);
+}
+
+inline IGFD_Selection IGFD_GetSelection(  // Open File behavior : will return selection via a map<FileName, FilePathName>
+        ImGuiFileDialog* vContextPtr) {           // user datas (can be retrieved in pane)
+    return IGFD_GetSelection(vContextPtr, IGFD_ResultMode_OverwriteFileExt);
+}
+
+inline char* IGFD_GetCurrentFileName(  // Save File behavior : will always return the content of the field with
+        // current filter extention, WARNINGS you are responsible to free it
+        ImGuiFileDialog* vContextPtr) {         // ImGuiFileDialog context
+    return IGFD_GetCurrentFileName(vContextPtr, IGFD_ResultMode_OverwriteFileExt);
+}
+
+inline char* IGFD_GetCurrentFileNameRaw(  // Save File behavior : will always return the content of the field with
+        // current filter extention, WARNINGS you are responsible to free it
+        ImGuiFileDialog* vContextPtr) {         // ImGuiFileDialog context
+    return IGFD_GetCurrentFileName(vContextPtr, IGFD_ResultMode_KeepInputFile);
+}
+
+inline void IGFD_OpenDialog(					// open a standard dialog
+        ImGuiFileDialog* vContext,								// ImGuiFileDialog context
+        const char* vKey,										// key dialog
+        const char* vTitle,										// title
+        const char* vFilters,									// filters/filter collections. set it to null for directory mode
+        const char* vPath,										// path
+        const char* vFileName,									// defaut file name
+        const int vCountSelectionMax,							// count selection max
+        void* vUserDatas,										// user datas (can be retrieved in pane)
+        ImGuiFileDialogFlags vFlags) {                          // ImGuiFileDialogFlags
+    IGFD_FileDialog_Config dialogConfig = IGFD_FileDialog_Config_Get();
+    dialogConfig.path = vPath;
+    if (vFileName) {
+        dialogConfig.fileName = vFileName;
+    }
+    dialogConfig.countSelectionMax = vCountSelectionMax;
+    dialogConfig.userDatas = vUserDatas;
+    dialogConfig.flags = vFlags;
+    IGFD_OpenDialog(vContext, vKey, vTitle, vFilters, dialogConfig);
+}
+
+inline void IGFD_OpenModal(					// open a modal dialog
+        ImGuiFileDialog* vContext,								// ImGuiFileDialog context
+        const char* vKey,										// key dialog
+        const char* vTitle,										// title
+        const char* vFilters,									// filters/filter collections. set it to null for directory mode
+        const char* vPath,										// path
+        const char* vFileName,									// defaut file name
+        const int vCountSelectionMax,							// count selection max
+        void* vUserDatas,										// user datas (can be retrieved in pane)
+        ImGuiFileDialogFlags vFlags) {							// ImGuiFileDialogFlags
+    IGFD_FileDialog_Config dialogConfig = IGFD_FileDialog_Config_Get();
+    dialogConfig.path = vPath;
+    if (vFileName) {
+        dialogConfig.fileName = vFileName;
+    }
+    dialogConfig.countSelectionMax = vCountSelectionMax;
+    dialogConfig.userDatas = vUserDatas;
+    dialogConfig.flags = vFlags | ImGuiFileDialogFlags_Modal;
+    IGFD_OpenDialog(vContext, vKey, vTitle, vFilters, dialogConfig);
+}
+
+#define IGFD_DEFINE_STRING_OUTPUT_FUNCTION(name) \
+inline std::string name##String(ImGuiFileDialog* vContextPtr) { \
+    char* data = name(vContextPtr); \
+    std::string dataString = data; \
+    free(data); \
+    return dataString; \
+}
+
+IGFD_DEFINE_STRING_OUTPUT_FUNCTION(IGFD_GetFilePathName)
+IGFD_DEFINE_STRING_OUTPUT_FUNCTION(IGFD_GetCurrentFileName)
+IGFD_DEFINE_STRING_OUTPUT_FUNCTION(IGFD_GetCurrentFileNameRaw)
+IGFD_DEFINE_STRING_OUTPUT_FUNCTION(IGFD_GetCurrentPath)
+IGFD_DEFINE_STRING_OUTPUT_FUNCTION(IGFD_GetCurrentFilter)

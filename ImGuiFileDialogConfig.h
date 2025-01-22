@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CustomFont.h"
+
 // uncomment and modify defines under for customize ImGuiFileDialog
 
 /////////////////////////////////
@@ -35,7 +37,7 @@
 //// THUMBNAILS /////////////////
 /////////////////////////////////
 
-// #define USE_THUMBNAILS
+#define USE_THUMBNAILS
 // the thumbnail generation use the stb_image and stb_resize lib who need to define the implementation
 // btw if you already use them in your app, you can have compiler error due to "implemntation found in double"
 // so uncomment these line for prevent the creation of implementation of these libs again
@@ -51,22 +53,25 @@
 // todo
 // #define DisplayMode_ThumbailsGrid_ButtonString "TG"
 // #define DisplayMode_ThumbailsGrid_ButtonHelp "Thumbnails Grid"
+#define DisplayMode_FilesList_ButtonString ICON_IGFD_FILE_LIST
+#define DisplayMode_ThumbailsList_ButtonString ICON_IGFD_FILE_LIST_THUMBNAILS
+#define DisplayMode_ThumbailsGrid_ButtonString ICON_IGFD_FILE_GRID_THUMBNAILS
 
 /////////////////////////////////
 //// EXPLORATION BY KEYS ////////
 /////////////////////////////////
 
-// #define USE_EXPLORATION_BY_KEYS
+#define USE_EXPLORATION_BY_KEYS
 // this mapping by default is for GLFW but you can use another
 // #include <GLFW/glfw3.h>
 // Up key for explore to the top
-// #define IGFD_KEY_UP ImGuiKey_UpArrow
+#define IGFD_KEY_UP ImGuiKey_UpArrow
 // Down key for explore to the bottom
-// #define IGFD_KEY_DOWN ImGuiKey_DownArrow
+#define IGFD_KEY_DOWN ImGuiKey_DownArrow
 // Enter key for open directory
-// #define IGFD_KEY_ENTER ImGuiKey_Enter
+#define IGFD_KEY_ENTER ImGuiKey_Enter
 // BackSpace for comming back to the last directory
-// #define IGFD_KEY_BACKSPACE ImGuiKey_Backspace
+#define IGFD_KEY_BACKSPACE ImGuiKey_Backspace
 
 /////////////////////////////////
 //// SHORTCUTS => ctrl + KEY ////
@@ -79,8 +84,8 @@
 /////////////////////////////////
 
 // by ex you can quit the dialog by pressing the key excape
-// #define USE_DIALOG_EXIT_WITH_KEY
-// #define IGFD_EXIT_KEY ImGuiKey_Escape
+#define USE_DIALOG_EXIT_WITH_KEY
+#define IGFD_EXIT_KEY ImGuiKey_Escape
 
 /////////////////////////////////
 //// WIDGETS ////////////////////
@@ -125,6 +130,34 @@
 // #define OverWriteDialogConfirmButtonString "Confirm"
 // #define OverWriteDialogCancelButtonString "Cancel"
 
+// Old version before C++20.
+//#define createDirButtonString ICON_IGFD_ADD
+//#define okButtonString ICON_IGFD_OK " OK"
+//#define cancelButtonString ICON_IGFD_CANCEL " Cancel"
+//#define resetButtonString ICON_IGFD_RESET
+//#define drivesButtonString ICON_IGFD_DRIVES
+//#define editPathButtonString ICON_IGFD_EDIT
+//#define searchString ICON_IGFD_SEARCH
+//#define dirEntryString ICON_IGFD_FOLDER
+//#define linkEntryString ICON_IGFD_LINK
+//#define fileEntryString ICON_IGFD_FILE
+//#define OverWriteDialogConfirmButtonString ICON_IGFD_OK " Confirm"
+//#define OverWriteDialogCancelButtonString ICON_IGFD_CANCEL " Cancel"
+
+// New version with C++20. We cannot use string concatenation due to the char8_t -> char pointer reinterpretation.
+#define createDirButtonString ICON_IGFD_ADD
+#define okButtonString U8("\uf00c OK")
+#define cancelButtonString U8("\uf00d Cancel")
+#define resetButtonString ICON_IGFD_RESET
+#define drivesButtonString ICON_IGFD_DRIVES
+#define editPathButtonString ICON_IGFD_EDIT
+#define searchString ICON_IGFD_SEARCH
+#define dirEntryString ICON_IGFD_FOLDER
+#define linkEntryString ICON_IGFD_LINK
+#define fileEntryString ICON_IGFD_FILE
+#define OverWriteDialogConfirmButtonString U8("\uf00c Confirm")
+#define OverWriteDialogCancelButtonString U8("\uf00d Cancel")
+
 // Validation buttons
 // #define okButtonString " OK"
 // #define okButtonWidth 0.0f
@@ -156,6 +189,8 @@
 // #define fileSizeKiloBytes "Ko"
 // #define fileSizeMegaBytes "Mo"
 // #define fileSizeGigaBytes "Go"
+#define tableHeaderAscendingIcon ICON_IGFD_CHEVRON_UP
+#define tableHeaderDescendingIcon ICON_IGFD_CHEVRON_DOWN
 
 // default table sort field (must be FIELD_FILENAME, FIELD_TYPE, FIELD_SIZE, FIELD_DATE or FIELD_THUMBNAILS)
 // #define defaultSortField FIELD_FILENAME
